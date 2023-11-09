@@ -1,0 +1,26 @@
+---
+
+- name: Firewall for Ubuntu
+  hosts: all
+  become: true
+  tasks:
+    - name: Install ufw
+      ansible.builtin.apt:
+        name: ufw
+        state: latest
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Enable ufw
+      ansible.builtin.ufw:
+        state: enabled
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Add and enable ports in ufw
+      ansible.builtin.ufw:
+        rule: allow
+        port: "{{ item }}"
+      with_items:
+        - 22
+        - 80
+        - 443
+      when: ansible_distribution == "Ubuntu"
